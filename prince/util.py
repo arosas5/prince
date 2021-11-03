@@ -1,9 +1,9 @@
-import pandas as pd
-
+#import pandas as pd
+import databricks.koalas as ks
 
 def make_labels_and_names(X):
 
-    if isinstance(X, pd.DataFrame):
+    if isinstance(X, ks.DataFrame):
         row_label = X.index.name if X.index.name else 'Rows'
         row_names = X.index.tolist()
         col_label = X.columns.name if X.columns.name else 'Columns'
