@@ -14,7 +14,7 @@ class MCA(ca.CA):
     def fit(self, X, y=None):
 
         if self.check_input:
-            utils.check_array(X, dtype=[str, np.number])
+            #utils.check_array(X, dtype=[str, np.number])
 
         if not isinstance(X, ks.DataFrame):
             X = ks.DataFrame(X)
@@ -47,7 +47,7 @@ class MCA(ca.CA):
         """Computes the row principal coordinates of a dataset."""
         self._check_is_fitted()
         if self.check_input:
-            utils.check_array(X, dtype=[str, np.number])
+            #utils.check_array(X, dtype=[str, np.number])
         return self.row_coordinates(X)
 
     def plot_coordinates(self, X, ax=None, figsize=(6, 6), x_component=0, y_component=1,
