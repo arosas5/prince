@@ -13,9 +13,8 @@ class MCA(ca.CA):
 
     def fit(self, X, y=None):
 
-        if self.check_input:
-            #utils.check_array(X, dtype=[str, np.number])
-
+        #if self.check_input:
+        #utils.check_array(X, dtype=[str, np.number])
         if not isinstance(X, ks.DataFrame):
             X = ks.DataFrame(X)
 
