@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import databricks.koalas as ks
 from sklearn import utils
 
 from . import ca
@@ -15,13 +16,13 @@ class MCA(ca.CA):
         if self.check_input:
             utils.check_array(X, dtype=[str, np.number])
 
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
+        if not isinstance(X, ks.DataFrame):
+            X = ks.DataFrame(X)
 
         n_initial_columns = X.shape[1]
 
         # One-hot encode the data
-        one_hot = pd.get_dummies(X)
+        one_hot = ks.get_dummies(X)
 
         # Apply CA to the indicator matrix
         super().fit(one_hot)
@@ -33,14 +34,14 @@ class MCA(ca.CA):
         return self
 
     def row_coordinates(self, X):
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-        return super().row_coordinates(pd.get_dummies(X))
+        if not isinstance(X, ks.DataFrame):
+            X = ks.DataFrame(X)
+        return super().row_coordinates(ks.get_dummies(X))
 
     def column_coordinates(self, X):
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-        return super().column_coordinates(pd.get_dummies(X))
+        if not isinstance(X, ks.DataFrame):
+            X = ks.DataFrame(X)
+        return super().column_coordinates(ks.get_dummies(X))
 
     def transform(self, X):
         """Computes the row principal coordinates of a dataset."""
