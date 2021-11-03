@@ -12,12 +12,8 @@ from . import plot
 class MCA(ca.CA):
 
     def fit(self, X, y=None):
-
-        #if self.check_input:
-        #utils.check_array(X, dtype=[str, np.number])
         if not isinstance(X, ks.DataFrame):
-            X = ks.DataFrame(X)
-
+           X = ks.DataFrame(X)
         n_initial_columns = X.shape[1]
 
         # One-hot encode the data
