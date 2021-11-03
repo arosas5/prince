@@ -5,6 +5,8 @@ from matplotlib import markers
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import databricks.koalas as ks
+
 from sklearn import utils
 
 from . import mca
@@ -45,8 +47,8 @@ class MFA(pca.PCA):
         # Check group types are consistent
         self.all_nums_ = {}
         for name, cols in sorted(self.groups.items()):
-            all_num = all(pd.api.types.is_numeric_dtype(X[c]) for c in cols)
-            all_cat = all(pd.api.types.is_string_dtype(X[c]) for c in cols)
+            all_num = all(ks.api.types.is_numeric_dtype(X[c]) for c in cols)
+            all_cat = all(ks.api.types.is_string_dtype(X[c]) for c in cols)
             if not (all_num or all_cat):
                 raise ValueError('Not all columns in "{}" group are of the same type'.format(name))
             self.all_nums_[name] = all_num
@@ -82,8 +84,8 @@ class MFA(pca.PCA):
     def _prepare_input(self, X):
 
         # Make sure X is a DataFrame for convenience
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
+        if not isinstance(X, ks.DataFrame):
+            X = ks.DataFrame(X)
 
         # Copy data
         if self.copy:
@@ -109,7 +111,7 @@ class MFA(pca.PCA):
             if not self.all_nums_[name]:
 
                 # From FactoMineR MFA code, needs checking
-                tmp = pd.get_dummies(X_partial)
+                tmp = ks.get_dummies(X_partial)
                 centre_tmp = tmp.mean() / len(tmp)
                 tmp2 = tmp / len(tmp)
                 poids_bary = tmp2.sum()
@@ -128,7 +130,7 @@ class MFA(pca.PCA):
 
                 X_partials.append(X_partial / self.partial_factor_analysis_[name].s_[0])
 
-        X_global = pd.concat(X_partials, axis='columns')
+        X_global = ks.concat(X_partials, axis='columns')
         X_global.index = X.index
         return X_global
 
@@ -186,13 +188,13 @@ class MFA(pca.PCA):
             X_partial = X.loc[:, cols]
 
             if not self.all_nums_[name]:
-                X_partial = pd.get_dummies(X_partial)
+                X_partial = ks.get_dummies(X_partial)
 
             Z_partial = X_partial / self.partial_factor_analysis_[name].s_[0]
             coords[name] = len(self.groups) * (Z_partial @ Z_partial.T) @ P
 
         # Convert coords to a MultiIndex DataFrame
-        coords = pd.DataFrame({
+        coords = ks.DataFrame({
             (name, i): group_coords.loc[:, i]
             for name, group_coords in coords.items()
             for i in range(group_coords.shape[1])
@@ -207,7 +209,7 @@ class MFA(pca.PCA):
         X_global = self._build_X_global(X)
         row_pc = self._row_coordinates_from_global(X_global)
 
-        return pd.DataFrame({
+        return ks.DataFrame({
             component: {
                 feature: row_pc[component].corr(X_global[feature])
                 for feature in X_global.columns
