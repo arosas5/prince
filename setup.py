@@ -101,6 +101,7 @@ setup(
         'matplotlib>=3.0.2',
         'numpy>=1.17.1',
         'pandas>=1.0.3',
+        'koalas>=1.8.2'
         'scipy>=1.3.0',
         'scikit-learn>=0.22.1'
     ],
